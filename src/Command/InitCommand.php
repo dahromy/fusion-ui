@@ -52,12 +52,12 @@ class InitCommand extends Command
         // Task 4: Create Fusion UI directives and append to input CSS file
         $io->note('Creating Fusion UI directives...');
         $fusionUIDirectives = $this->createFusionUIDirectives();
-        file_put_contents($inputFile, $fusionUIDirectives, FILE_APPEND | LOCK_EX);
+        file_put_contents($inputFile, $fusionUIDirectives);
 
         // Task 5: Copying font files to the proper directory
         $io->note('Copying fonts folder...');
         $filesystem = new Filesystem();
-        $sourceDir = __DIR__ . '/../../assets/styles/fonts';
+        $sourceDir = __DIR__ . '/../../assets/fonts';
         $targetDir = dirname($inputFile) . '/fonts';
 
         try {
