@@ -1,0 +1,24 @@
+{
+  "name": "@dahromy/fusion-ui",
+  "version": "1.0.0",
+  "symfony": {
+    "importmap": {
+      "@hotwired/stimulus": "^3.2.2",
+      "@kanety/stimulus-static-actions": "^1.0.1",
+      "embla-carousel": "^8.0.2",
+      "@popperjs/core": "^2.11.8",
+      "stimulus-use": "^0.52.2",
+      "tailwindcss/defaultTheme": "^3.4.3",
+      "@hyeon/tailwindcss-animate": "^1.1.6"
+    }
+  },
+  "peerDependencies": {
+    "@hotwired/stimulus": "^3.2.2",
+    "@kanety/stimulus-static-actions": "^1.0.1",
+    "embla-carousel": "^8.0.2",
+    "@popperjs/core": "^2.11.8",
+    "stimulus-use": "^0.52.2",
+    "tailwindcss/defaultTheme": "^3.4.3",
+    "@hyeon/tailwindcss-animate": "^1.1.6"
+  }
+}

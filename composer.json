@@ -1,0 +1,50 @@
+{
+  "name": "dahromy/fusion-ui",
+  "type": "symfony-bundle",
+  "description": "This bundle provides a set of Twig components of reusable UI elements for Symfony applications.",
+  "keywords": [
+    "symfony-ux",
+    "twig",
+    "ui",
+    "fusion"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Roméo RAZAFINDRAKOTO",
+      "email": "romeorazaf@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "DahRomy\\FusionUI\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "DahRomy\\FusionUI\\Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": ">=8.2",
+    "symfony/framework-bundle": "^6.4|^7.0",
+    "symfony/twig-bundle": "^6.4|^7.0",
+    "symfony/ux-icons": "^2",
+    "symfonycasts/tailwind-bundle": "^0.5.1",
+    "tales-from-a-dev/twig-tailwind-extra": "^0.2.1"
+  },
+  "require-dev": {
+    "symfony/asset-mapper": "^6.4|^7.0",
+    "symfony/console": "^6.4|^7.0",
+    "symfony/http-client": "6.4|^7.0",
+    "symfony/phpunit-bridge": "^6.4|^7.0",
+    "symfony/ux-twig-component": "^2.16"
+  },
+  "extra": {
+    "thanks": {
+      "name": "symfony/ux",
+      "url": "https://github.com/symfony/ux"
+    }
+  },
+  "version": "0.1.0"
+}
