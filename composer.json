@@ -31,14 +31,14 @@
     "symfony/twig-bundle": "^6.4|^7.0",
     "symfony/ux-icons": "^2",
     "symfonycasts/tailwind-bundle": "^0.5.1",
-    "tales-from-a-dev/twig-tailwind-extra": "^0.2.1"
+    "tales-from-a-dev/twig-tailwind-extra": "^0.2.1",
+    "symfony/ux-twig-component": "^2.17",
+    "symfony/asset-mapper": "^6.4|^7.0"
   },
   "require-dev": {
-    "symfony/asset-mapper": "^6.4|^7.0",
     "symfony/console": "^6.4|^7.0",
     "symfony/http-client": "6.4|^7.0",
-    "symfony/phpunit-bridge": "^6.4|^7.0",
-    "symfony/ux-twig-component": "^2.16"
+    "symfony/phpunit-bridge": "^6.4|^7.0"
   },
   "extra": {
     "thanks": {
