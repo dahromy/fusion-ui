@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rules SYSTEM "https://resources.jetbrains.com/writerside/1.0/redirection-rules.dtd">
+<rules>
+    <!-- format is as follows
+    <rule id="<unique id>">
+        <accepts>page.html</accepts>
+    </rule>
+    -->
+    <rule id="66ad8b4a">
+        <description>Created after removal of "Starter" from Instance Name</description>
+        <accepts>starter.html</accepts>
+    </rule>
+    <rule id="4a6abf9d">
+        <description>Created after removal of "Home" from Instance Name</description>
+        <accepts>Home.html</accepts>
+    </rule>
+</rules>
