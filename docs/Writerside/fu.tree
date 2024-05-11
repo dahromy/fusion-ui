@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="fu"
+                 name="Fusion UI"
+                  start-page="Introduction.md">
+    <toc-element topic="Introduction.md"/>
+    <toc-element topic="Installation.md"/>
+    <toc-element topic="Cli.md"/>
+    <toc-element topic="Accordion.md"/>
+</instance-profile>
