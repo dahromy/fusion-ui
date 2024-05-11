@@ -6,7 +6,7 @@ Accessible and customizable components that you can copy and paste into your app
 
 ## Documentation
 
-Visit [Docs](/docs/index.md) to view the documentation.
+Visit [Docs](https://dahromy.github.io/fusion-ui/) to view the documentation.
 
 
 ## License
