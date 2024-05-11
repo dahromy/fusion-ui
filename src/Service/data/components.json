@@ -1,0 +1,48 @@
+[
+  {
+    "name": "accordion",
+    "dependencies": [],
+    "registryDependencies": [],
+    "iconDependencies": [
+      "radix-icons:caret-down"
+    ],
+    "files": [
+      {
+        "name": "root.html.twig",
+        "dir": "templates/components/ui/accordion",
+        "content": "{% props type = \"single\" %}\n\n<div{{ attributes.add(stimulus_controller('ui--accordion', { type })) }}>\n    {% block content %}{% endblock %}\n</div>"
+      },
+      {
+        "name": "trigger.html.twig",
+        "dir": "templates/components/ui/accordion",
+        "content": "<button {{ attributes.add(stimulus_target('ui--accordion', 'trigger')).add(stimulus_action('ui--accordion', 'toggle', 'click')).without('class') }}\n        type=\"button\" aria-expanded=\"false\"\n        data-state=\"closed\"\n        class=\"{{ [attributes.render('class') ?? 'w-full flex flex-1 items-center w-full justify-between py-4 text-sm font-medium transition-all hover:underline [&[data-state=open]>span>svg]:rotate-180']| tailwind_merge }}\"\n>\n    {% block content %}{% endblock %}\n</button>"
+      },
+      {
+        "name": "item.html.twig",
+        "dir": "templates/components/ui/accordion",
+        "content": "{% props disabled = false %}\n\n<div{{ attributes.add(stimulus_target('ui--accordion', 'item')).add(stimulus_action('ui--accordion', 'keydown', 'keydown')).without('class') }}\n        {% if disabled %} data-disabled {% endif %} data-state=\"closed\"\n        class=\"{{ [attributes.render('class') ?? 'border-b st-accordion']|tailwind_merge }}\"\n>\n    {% block content %}{% endblock %}\n</div>"
+      },
+      {
+        "name": "icon.html.twig",
+        "dir": "templates/components/ui/accordion",
+        "content": "<span{{ attributes.add(stimulus_target('ui--accordion', 'icon')).without('class') }} class=\"{{ ['opacity-50', attributes.render('class')] | tailwind_merge }}\">\n    {% if block('content') is defined and block('content') is not empty %}\n        {% block content %}{% endblock %}\n    {% else %}\n        <twig:ux:icon name=\"radix-icons:caret-down\"\n                      class=\"h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200\"/>\n    {% endif %}\n</span>"
+      },
+      {
+        "name": "default_trigger.html.twig",
+        "dir": "templates/components/ui/accordion",
+        "content": "<button {{ attributes.add(stimulus_target('ui--accordion', 'trigger')).add(stimulus_action('ui--accordion', 'toggle', 'click')).without('class') }}\n        type=\"button\" aria-expanded=\"false\"\n        class=\"{{ ['flex flex-1 items-center w-full justify-between py-4 text-sm font-medium transition-all hover:underline [&[data-state=open]>span>svg]:rotate-180', attributes.render('class')]| tailwind_merge }}\"\n>\n    <p>{% block content %}{% endblock %}</p>\n    <twig:ui:accordion:icon/>\n</button>"
+      },
+      {
+        "name": "content.html.twig",
+        "dir": "templates/components/ui/accordion",
+        "content": "<div{{ attributes.add(stimulus_target('ui--accordion', 'content')).without('class') }}\n        class=\"{{ 'overflow-hidden text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down'|tailwind_merge }}\"\n        hidden\n>\n    <div class=\"{{ ['pb-4 pt-0', attributes.render('class')]|tailwind_merge }}\">\n        {% block content %}{% endblock %}\n    </div>\n</div>"
+      },
+      {
+        "name": "accordion_controller.js",
+        "dir": "assets/controllers/ui",
+        "content": "import {Controller} from \"@hotwired/stimulus\";\n\nconst ACCORDION_KEYS = ['Home', 'End', 'ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight'];\n\nexport default class UIAccordion extends Controller {\n    static targets = [\"item\", \"trigger\", \"content\"];\n    static values = {type: String}\n\n    initialize() {\n        // validate value type\n        if (!['single', 'multiple'].includes(this.typeValue)) {\n            throw new Error('Failed prop type: Invalid prop `type` supplied to `accordion:root`. Expected one of `single | multiple`.')\n        }\n\n        this.setIndicesAndStyles(this.itemTargets);\n        this.setIndicesAndStyles(this.triggerTargets);\n        this.setIndicesAndStyles(this.contentTargets, content => {\n            content.style.setProperty('--radix-accordion-content-height', 'var(--radix-collapsible-content-height)');\n            content.style.setProperty('--radix-accordion-content-width', 'var(--radix-collapsible-content-width)');\n        });\n    }\n\n    setIndicesAndStyles(targetsArray, extraOperation = () => {\n    }) {\n        targetsArray.forEach((item, index) => {\n            item.setAttribute(\"data-index\", index);\n            extraOperation(item);\n        });\n    }\n\n    keydown(event) {\n        if (!ACCORDION_KEYS.includes(event.key)) return;\n\n        const target = event.target;\n        const orientation = this.element.getAttribute(\"data-orientation\");\n        const isDirectionLTR = this.element.getAttribute(\"data-direction\") === 'ltr';\n        const triggerIndex = parseInt(target.getAttribute(\"data-index\"));\n        const triggerCount = this.triggerTargets.length;\n\n        if (triggerIndex === -1) return;\n\n        // Prevents page scroll while user is navigating\n        event.preventDefault();\n\n        let nextIndex = triggerIndex;\n        const homeIndex = 0;\n        const endIndex = triggerCount - 1;\n\n        const operations = {\n            moveNext: () => {\n                nextIndex = triggerIndex + 1;\n                nextIndex = nextIndex > endIndex ? homeIndex : nextIndex;\n            }, movePrev: () => {\n                nextIndex = triggerIndex - 1;\n                nextIndex = nextIndex < homeIndex ? endIndex : nextIndex;\n            }\n        };\n        const keyMappings = {\n            \"Home\": () => nextIndex = homeIndex, \"End\": () => nextIndex = endIndex, \"ArrowRight\": () => {\n                if (orientation === 'horizontal') {\n                    isDirectionLTR ? operations.moveNext() : operations.movePrev();\n                }\n            }, \"ArrowDown\": () => {\n                if (orientation === 'vertical') {\n                    operations.moveNext();\n                }\n            }, \"ArrowLeft\": () => {\n                if (orientation === 'horizontal') {\n                    isDirectionLTR ? operations.movePrev() : operations.moveNext();\n                }\n            }, \"ArrowUp\": () => {\n                if ('vertical' === orientation) {\n                    operations.movePrev();\n                }\n            }\n        };\n\n        const keyFunction = keyMappings[event.key];\n        if (keyFunction) {\n            keyFunction();\n        }\n\n        const clampedIndex = nextIndex % triggerCount;\n        this.triggerTargets[clampedIndex]?.focus();\n    }\n\n    setElementState(element, isOpen) {\n        const stateStr = isOpen ? 'open' : 'closed';\n        element.dataset.state = stateStr;\n    }\n\n    setInitialContentProperties(contentElement, isOpen) {\n        contentElement.hidden = isOpen;\n        contentElement.style.setProperty('--radix-collapsible-content-height', contentElement.scrollHeight + \"px\");\n        contentElement.style.setProperty('--radix-collapsible-content-width', contentElement.scrollWidth + \"px\");\n        contentElement.hasBeenClicked = true;\n    }\n\n    closeLastOpenedElement(index) {\n        if (this.lastOpenIndex !== undefined && this.lastOpenIndex !== index) {\n            const lastContent = this.contentTargets[this.lastOpenIndex];\n            const lastItem = this.itemTargets[this.lastOpenIndex];\n            const lastTrigger = this.triggerTargets[this.lastOpenIndex];\n\n            this.setElementState(lastContent, false);\n            this.setElementState(lastItem, false);\n            this.setElementState(lastTrigger, false);\n\n            setTimeout(() => {\n                lastContent.hidden = true;\n            }, 180);\n        }\n    }\n\n    toggle(event) {\n        event.preventDefault();\n        const trigger = event.currentTarget;\n\n        const triggerIndex = parseInt(trigger.getAttribute(\"data-index\"));\n        const content = this.contentTargets[triggerIndex];\n        const item = this.itemTargets[triggerIndex];\n\n        if (item.hasAttribute('data-disabled')) return;\n\n        if (this.typeValue !== 'multiple') {\n            this.closeLastOpenedElement(triggerIndex);\n        }\n\n        const shouldOpen = content.dataset.state !== 'open';\n\n        this.setElementState(content, shouldOpen);\n        this.setElementState(item, shouldOpen);\n        this.setElementState(trigger, shouldOpen);\n        trigger.setAttribute('aria-expanded', shouldOpen);\n\n        if (!content.hasBeenClicked) {\n            this.setInitialContentProperties(content, !shouldOpen);\n        } else {\n            if (!shouldOpen) {\n                setTimeout(() => {\n                    content.hidden = true;\n                }, 180);\n            } else {\n                content.hidden = false;\n            }\n        }\n\n        this.lastOpenIndex = triggerIndex;\n    }\n}"
+      }
+    ],
+    "type": "ui"
+  }
+]

@@ -262,6 +262,11 @@ class InitCommand extends Command
                 @apply bg-background text-foreground;
                 font-feature-settings: "rlig" 1, "calt" 1;
             }
+            
+            .turbo-progress-bar {
+                height: 2px;
+                @apply bg-foreground;
+            }
         }
         EOF;
     }
