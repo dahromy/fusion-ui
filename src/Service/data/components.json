@@ -71,8 +71,12 @@
   },
   {
     "name": "alert-dialog",
-    "dependencies": ["@kanety/stimulus-static-actions"],
-    "registryDependencies": ["button"],
+    "dependencies": [
+      "@kanety/stimulus-static-actions"
+    ],
+    "registryDependencies": [
+      "button"
+    ],
     "iconDependencies": [],
     "files": [
       {
@@ -156,6 +160,34 @@
         "name": "root.html.twig",
         "dir": "templates/components/ui/aspect-ratio",
         "content": "{% props ratio = \"1/1\" %}\n\n{% set aspectRatioArray = ratio|split('/') %}\n{% set result = (aspectRatioArray[1]|number_format)/(aspectRatioArray[0]|number_format)*100 %}\n\n<div class=\"relative w-full\" style=\"padding-bottom: {{ result }}%;\">\n    <div{{ attributes.without('class') }}\n            class=\"{{ ['bg-muted absolute inset-0 [&>img]:object-cover [&>img]:absolute [&>img]:h-full [&>img]:w-full [&>img]:inset-0 [&>img]:text-transparent', attributes.render('class')] | tailwind_merge }}\">\n        {% block content %}{% endblock %}\n    </div>\n</div>"
+      }
+    ]
+  },
+  {
+    "name": "avatar",
+    "dependencies": [],
+    "registryDependencies": [],
+    "iconDependencies": [],
+    "files": [
+      {
+        "name": "root.html.twig",
+        "dir": "templates/components/ui/avatar",
+        "content": "{% props size = 'md' %}\n\n{% set avatarVariants = cva({\n    base: 'relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full',\n    variants: {\n        size: {\n            xs: \"h-4 w-4 text-[0.5rem]\",\n            sm: \"h-6 w-6 text-xs\",\n            md: \"h-10 w-10 text-base\",\n            lg: \"h-14 w-14 text-xl\",\n            xl: \"h-20 w-20 text-3xl\"\n        }\n    },\n    defaultVariants: {\n        size: \"md\"\n    },\n}) %}\n\n<span {{ attributes.add(stimulus_controller('ui--avatar')).without('class') }} class=\"{{ avatarVariants.apply({size}, attributes.render('class') ?? '') | tailwind_merge }}\">\n    {% block content %}{% endblock %}\n</span>"
+      },
+      {
+        "name": "image.html.twig",
+        "dir": "templates/components/ui/avatar",
+        "content": "<img {{ attributes.add(stimulus_target('ui--avatar', 'image')).without('class') }}\n        loading=\"lazy\"\n        class=\"{{ ['aspect-square h-full w-full', attributes.render('class')] | tailwind_merge }}\"\n        hidden>"
+      },
+      {
+        "name": "fallback.html.twig",
+        "dir": "templates/components/ui/avatar",
+        "content": "{% props delay = 0 %}\n\n<span hidden {{ attributes.add(stimulus_target('ui--avatar', 'fallback')).without('class') }} data-delay=\"{{ delay }}\"\n      class=\"{{ ['flex h-full w-full items-center justify-center rounded-full bg-muted', attributes.render('class')] | tailwind_merge }}\">\n    {% block content %}{% endblock %}\n</span>"
+      },
+      {
+        "name": "avatar_controller.js",
+        "dir": "assets/controllers/ui",
+        "content": "import {Controller} from \"@hotwired/stimulus\";\n\nconst LOADING_STATUS = ['idle', 'loading', 'loaded', 'failed']\n\nexport default class UIAvatar extends Controller {\n    static targets = ['image', 'fallback']\n    static values = {\n        status: {type: String, default: LOADING_STATUS[0]},\n    }\n\n    initialize() {\n        this.src = this.imageTarget.src\n        this.delay = this.fallbackTarget.dataset.delay\n    }\n\n    async connect() {\n        this.waitAndLoadImage(this.delay, this.src)\n    }\n\n    waitAndLoadImage(delay, src) {\n        if (Number(delay) !== 0) {\n            window.setTimeout(() => {\n                this.imageLoadingStatus(src)\n            }, delay)\n        } else {\n            this.imageLoadingStatus(src)\n        }\n    }\n\n    statusValueChanged() {\n        this.handleVisibility(LOADING_STATUS[2], false, true)\n        this.handleVisibility(LOADING_STATUS[3], true, false)\n    }\n\n    handleVisibility(status, imageHidden, fallbackHidden) {\n        if (this.statusValue === status) {\n            this.imageTarget.hidden = imageHidden\n            this.fallbackTarget.hidden = fallbackHidden\n        }\n    }\n\n    imageLoadingStatus(src) {\n        if (!src) {\n            this.statusValue = LOADING_STATUS[3];\n            return;\n        }\n        this.loadImage(src)\n    }\n\n    loadImage(src) {\n        const image = new window.Image()\n        const updateStatus = (status) => {\n            if (this.statusValue === LOADING_STATUS[3]) return;\n            this.statusValue = status\n        }\n\n        this.statusValue = LOADING_STATUS[1]\n        image.onload = () => updateStatus(LOADING_STATUS[2])\n        image.onerror = () => updateStatus(LOADING_STATUS[3])\n        image.src = src\n    }\n}"
       }
     ]
   }
