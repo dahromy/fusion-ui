@@ -1,1 +1,50 @@
-{"entities":{"pages":{"Index":{"id":"Index","title":"Introduction","url":"index.html","level":0,"tabIndex":0},"Installation":{"id":"Installation","title":"Installation","url":"installation.html","level":0,"tabIndex":1},"Cli":{"id":"Cli","title":"CLI","url":"cli.html","level":0,"tabIndex":2},"components":{"id":"components","title":"Components","level":0,"pages":["Accordion"],"tabIndex":3},"Accordion":{"id":"Accordion","title":"Accordion","url":"accordion.html","level":1,"parentId":"components","tabIndex":0}}},"topLevelIds":["Index","Installation","Cli","components"]}
+{
+  "entities": {
+    "pages": {
+      "Index": {
+        "id": "Index",
+        "title": "Introduction",
+        "url": "index.html",
+        "level": 0,
+        "tabIndex": 0
+      },
+      "Installation": {
+        "id": "Installation",
+        "title": "Installation",
+        "url": "installation.html",
+        "level": 0,
+        "tabIndex": 1
+      },
+      "Cli": {
+        "id": "Cli",
+        "title": "CLI",
+        "url": "cli.html",
+        "level": 0,
+        "tabIndex": 2
+      },
+      "components": {
+        "id": "components",
+        "title": "Components",
+        "level": 0,
+        "pages": [
+          "Accordion"
+        ],
+        "tabIndex": 3
+      },
+      "Accordion": {
+        "id": "Accordion",
+        "title": "Accordion",
+        "url": "accordion.html",
+        "level": 1,
+        "parentId": "components",
+        "tabIndex": 0
+      }
+    }
+  },
+  "topLevelIds": [
+    "Index",
+    "Installation",
+    "Cli",
+    "components"
+  ]
+}

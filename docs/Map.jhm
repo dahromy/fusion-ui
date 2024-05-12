@@ -1,1 +1,13 @@
-<?xml version='1.0' encoding='UTF-8'?><map version="2.0"><mapID target="Installation.md" url="installation.html" default="no"/><mapID target="Cli" url="cli.html" default="no"/><mapID target="CLI" url="cli.html" default="no"/><mapID target="Installation" url="installation.html" default="no"/><mapID target="Cli.md" url="cli.html" default="no"/><mapID target="Accordion.md" url="accordion.html" default="no"/><mapID target="Accordion" url="accordion.html" default="no"/><mapID target="Introduction" url="index.html" default="no"/><mapID target="Index" url="index.html" default="yes"/><mapID target="Index.md" url="index.html" default="yes"/></map>
+<?xml version='1.0' encoding='UTF-8'?>
+<map version="2.0">
+    <mapID target="Installation.md" url="installation.html" default="no"/>
+    <mapID target="Cli" url="cli.html" default="no"/>
+    <mapID target="CLI" url="cli.html" default="no"/>
+    <mapID target="Installation" url="installation.html" default="no"/>
+    <mapID target="Cli.md" url="cli.html" default="no"/>
+    <mapID target="Accordion.md" url="accordion.html" default="no"/>
+    <mapID target="Accordion" url="accordion.html" default="no"/>
+    <mapID target="Introduction" url="index.html" default="no"/>
+    <mapID target="Index" url="index.html" default="yes"/>
+    <mapID target="Index.md" url="index.html" default="yes"/>
+</map>
