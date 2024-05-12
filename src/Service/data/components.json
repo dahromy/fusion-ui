@@ -287,5 +287,32 @@
         "content": "import {Controller} from \"@hotwired/stimulus\";\nimport EmblaCarousel from 'embla-carousel'\nimport '@kanety/stimulus-static-actions';\n\nexport default class UICarousel extends Controller {\n    static targets = ['carousel', 'content', 'item', 'previous', 'next']\n    static values = {\n        orientation: String,\n        options: Object\n    }\n    static actions = [\n        ['previous', 'click->scrollPrev'],\n        ['next', 'click->scrollNext'],\n    ];\n\n    initialize() {\n        this.api = EmblaCarousel(this.carouselTarget, this.optionsValue)\n\n        this.updateScrollButtonsState();\n        this.updateClasses();\n    }\n\n    scrollPrev() {\n        this.api.scrollPrev();\n        this.updateScrollButtonsState();\n    }\n\n    scrollNext() {\n        this.api.scrollNext();\n        this.updateScrollButtonsState();\n    }\n\n    updateScrollButtonsState() {\n        this.previousTarget.disabled = !this.api.canScrollPrev();\n        this.nextTarget.disabled = !this.api.canScrollNext();\n    }\n\n    updateClasses() {\n        const isHorizontal = this.orientationValue === 'horizontal';\n\n        const contentClass = isHorizontal ? ['-ml-4'] : ['-mt-4', 'flex-col'];\n        this.addClassesToElement(this.contentTarget, contentClass);\n\n        const itemClass = isHorizontal ? ['pl-4'] : ['pt-4'];\n        this.itemTargets.forEach(itemTarget => this.addClassesToElement(itemTarget, itemClass));\n\n        const previousClass = isHorizontal ? ['-left-12', 'top-1/2', '-translate-y-1/2'] : ['-top-12', 'left-1/2', '-translate-x-1/2', 'rotate-90'];\n        this.addClassesToElement(this.previousTarget, previousClass);\n\n        const nextClass = isHorizontal ? ['-right-12', 'top-1/2', '-translate-y-1/2'] : ['-bottom-12', 'left-1/2', '-translate-x-1/2', 'rotate-90'];\n        this.addClassesToElement(this.nextTarget, nextClass);\n    }\n\n    addClassesToElement(element, classes) {\n        classes.forEach(className => element.classList.add(className));\n    }\n}"
       }
     ]
+  },
+  {
+    "name": "checkbox",
+    "dependencies": [
+      "@kanety/stimulus-static-actions"
+    ],
+    "registryDependencies": [],
+    "iconDependencies": [
+      "radix-icons:check"
+    ],
+    "files": [
+      {
+        "name": "root.html.twig",
+        "dir": "templates/components/ui/checkbox",
+        "content": "{% props checked = false, disabled = false, required = false, id = null %}\n\n{% set isIndeterminate = (checked == 'indeterminate') %}\n{% set state = checked ? 'checked' : 'unchecked' %}\n\n<button {{ attributes.add(stimulus_controller('ui--checkbox', {\n    'id': id\n})).add(stimulus_target('ui--checkbox', 'button')).without('class') }}\n        type=\"button\"\n        role=\"checkbox\"\n        aria-checked=\"{{ isIndeterminate ? 'mixed' : (checked ? 'true' : 'false') }}\"\n        aria-required=\"{{ required ? 'true' : 'false' }}\"\n        data-state=\"{{ state }}\"\n        data-disabled=\"{{ disabled ? 'true' : 'false' }}\"\n        class=\"{{ ['peer h-4 w-4 shrink-0 rounded-sm border border-primary shadow focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground', attributes.render('class')] | tailwind_merge }}\">\n    {% block content %}{% endblock %}\n</button>"
+      },
+      {
+        "name": "indicator.html.twig",
+        "dir": "templates/components/ui/checkbox",
+        "content": "<span {{ attributes.add(stimulus_target('ui--checkbox', 'indicator')).without('class') }}\n        class=\"{{ ['flex items-center justify-center text-current', attributes.render('class')] | tailwind_merge }}\"\n        style=\"pointer-events: none; display: none;\"\n>\n    <twig:ux:icon name=\"radix-icons:check\" class=\"w-4 h-4\"/>\n</span>"
+      },
+      {
+        "name": "checkbox_controller.js",
+        "dir": "assets/controllers/ui",
+        "content": "import {Controller} from \"@hotwired/stimulus\";\nimport '@kanety/stimulus-static-actions';\n\nexport default class UICheckbox extends Controller {\n    static targets = ['button', 'indicator'];\n    static actions = [['button', 'click->toggle']];\n    static values = {id: String};\n\n    initialize() {\n        this.state = this.element.dataset.state;\n        this.label = null;\n        this.input = null;\n        if (this.idValue) {\n            this.label = document.querySelector(`label[for=\"${this.idValue}\"]`);\n            this.input = document.getElementById(this.idValue);\n            this.label && this.label.addEventListener('click', () => this.toggle());\n\n            if (this.input) {\n                this.state = this.input.checked ? 'checked' : 'unchecked';\n                this.updateCheckboxAttributes(this.state);\n            }\n        }\n        this.handleState();\n    }\n\n    updateCheckboxAttributes(state) {\n        this.buttonTarget.dataset.state = state;\n        this.buttonTarget.setAttribute('aria-checked', state === 'checked' ? 'true' : 'false');\n        this.indicatorTarget.dataset.state = state;\n    }\n\n    getCheckboxState() {\n        return this.state === 'checked' ? 'unchecked' : 'checked';\n    }\n\n    handleState() {\n        this.state === 'checked' ? this.handleChecked() : this.handleUnchecked();\n    }\n\n    handleChecked() {\n        this.indicatorTarget.style.removeProperty('display');\n    }\n\n    handleUnchecked() {\n        this.indicatorTarget.style.display = 'none';\n    }\n\n    toggle() {\n        this.state = this.getCheckboxState();\n        this.updateCheckboxAttributes(this.state);\n        this.handleState();\n\n        if (this.input) {\n            this.input.dispatchEvent(new Event('change', {bubbles: true}));\n        }\n    }\n}"
+      }
+    ]
   }
 ]
