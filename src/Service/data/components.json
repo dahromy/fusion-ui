@@ -314,5 +314,33 @@
         "content": "import {Controller} from \"@hotwired/stimulus\";\nimport '@kanety/stimulus-static-actions';\n\nexport default class UICheckbox extends Controller {\n    static targets = ['button', 'indicator'];\n    static actions = [['button', 'click->toggle']];\n    static values = {id: String};\n\n    initialize() {\n        this.state = this.element.dataset.state;\n        this.label = null;\n        this.input = null;\n        if (this.idValue) {\n            this.label = document.querySelector(`label[for=\"${this.idValue}\"]`);\n            this.input = document.getElementById(this.idValue);\n            this.label && this.label.addEventListener('click', () => this.toggle());\n\n            if (this.input) {\n                this.state = this.input.checked ? 'checked' : 'unchecked';\n                this.updateCheckboxAttributes(this.state);\n            }\n        }\n        this.handleState();\n    }\n\n    updateCheckboxAttributes(state) {\n        this.buttonTarget.dataset.state = state;\n        this.buttonTarget.setAttribute('aria-checked', state === 'checked' ? 'true' : 'false');\n        this.indicatorTarget.dataset.state = state;\n    }\n\n    getCheckboxState() {\n        return this.state === 'checked' ? 'unchecked' : 'checked';\n    }\n\n    handleState() {\n        this.state === 'checked' ? this.handleChecked() : this.handleUnchecked();\n    }\n\n    handleChecked() {\n        this.indicatorTarget.style.removeProperty('display');\n    }\n\n    handleUnchecked() {\n        this.indicatorTarget.style.display = 'none';\n    }\n\n    toggle() {\n        this.state = this.getCheckboxState();\n        this.updateCheckboxAttributes(this.state);\n        this.handleState();\n\n        if (this.input) {\n            this.input.dispatchEvent(new Event('change', {bubbles: true}));\n        }\n    }\n}"
       }
     ]
+  },
+  {
+    "name": "collapsible",
+    "dependencies": ["@kanety/stimulus-static-actions"],
+    "registryDependencies": ["button"],
+    "iconDependencies": [],
+    "files": [
+      {
+        "name": "root.html.twig",
+        "dir": "templates/components/ui/collapsible",
+        "content": "<div{{ attributes.add(stimulus_controller('ui--collapsible')) }} data-state=\"closed\">\n    {% block content %}{% endblock %}\n</div>"
+      },
+      {
+        "name": "trigger.html.twig",
+        "dir": "templates/components/ui/collapsible",
+        "content": "{% set attrs = attributes.add(stimulus_target('ui--collapsible', 'trigger')).defaults({\n    'aria-expanded': 'false',\n    'data-state': 'closed',\n}) %}\n\n{% component 'ui:button:root' with {...attrs} %}\n    {% block content %}{{ block(outerBlocks.content) }}{% endblock %}\n{% endcomponent %}"
+      },
+      {
+        "name": "content.html.twig",
+        "dir": "templates/components/ui/collapsible",
+        "content": "<div{{ attributes.add(stimulus_target('ui--collapsible', 'content')) }} data-state=\"closed\" hidden>\n    {% block content %}{% endblock %}\n</div>"
+      },
+      {
+        "name": "collapsible_controller.js",
+        "dir": "assets/controllers/ui",
+        "content": "import {Controller} from \"@hotwired/stimulus\";\nimport '@kanety/stimulus-static-actions';\n\nexport default class UICollapsible extends Controller {\n    static targets = ['trigger', 'content'];\n    static actions = [\n        ['trigger', 'click->toggle']\n    ];\n\n    setDataState(target, state) {\n        target.setAttribute('data-state', state);\n    }\n\n    setAriaAttributes(target, expanded) {\n        target.setAttribute('aria-expanded', expanded);\n    }\n\n    toggle() {\n        const active = this.element.dataset.state === 'active';\n        this.contentTarget.hidden = active;\n\n        this.setDataState(this.element, active ? 'closed' : 'active');\n        this.setDataState(this.triggerTarget, active ? 'closed' : 'active');\n        this.setDataState(this.contentTarget, active ? 'closed' : 'active');\n        this.setAriaAttributes(this.triggerTarget, active ? 'false' : 'true');\n    }\n}"
+      }
+    ]
   }
 ]
