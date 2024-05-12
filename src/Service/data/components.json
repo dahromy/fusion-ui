@@ -377,5 +377,36 @@
         "content": "{% set labelVariants = cva({\n    base: 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',\n}) %}\n\n<label {{ attributes.without('class') }} class=\"{{ labelVariants.apply({}, attributes.render('class') ?? '') | tailwind_merge }}\">\n    {% block content %}{% endblock %}\n</label>"
       }
     ]
+  },
+  {
+    "name": "popover",
+    "dependencies": [
+      "@popperjs/core",
+      "stimulus-use"
+    ],
+    "registryDependencies": [],
+    "iconDependencies": [],
+    "files": [
+      {
+        "name": "root.html.twig",
+        "dir": "templates/components/ui/popover",
+        "content": "{% props placement = 'bottom', trigger = 'click', dismissAfter = null, matchWidth = false %}\n\n<div {{ attributes.add(stimulus_controller('ui--popover', { placement, trigger, dismissAfter, matchWidth })) }} data-state=\"closed\">\n    {% block content %}{% endblock %}\n</div>"
+      },
+      {
+        "name": "content.html.twig",
+        "dir": "templates/components/ui/popover",
+        "content": "<div {{ stimulus_target('ui--popover', 'wrapper') }} class=\"hidden\">\n    <div {{ attributes.add(stimulus_controller('ui--transition')).add(stimulus_target('ui--popover', 'content')).without('class') }}\n            data-state=\"open\"\n            role=\"dialog\"\n            data-side=\"{{ outerScope.placement }}\"\n            tabindex=\"-1\"\n            class=\"{{ ['z-50 w-72 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2', attributes.render('class')] | tailwind_merge }}\">\n        {% block content %}{% endblock %}\n    </div>\n</div>"
+      },
+      {
+        "name": "trigger.html.twig",
+        "dir": "templates/components/ui/popover",
+        "content": "{% if outerScope.trigger == 'hover' %}\n    {% set action = stimulus_action('ui--popover', 'toggle', 'mouseenter') %}\n{% elseif outerScope.trigger == 'focus' %}\n    {% set action = stimulus_action('ui--popover', 'toggle', 'focusin') %}\n{% else %}\n    {% set action = stimulus_action('ui--popover', 'toggle', outerScope.trigger) %}\n{% endif %}\n\n<div{{ attributes.add(stimulus_target('ui--popover', 'trigger')).add(action) }}>\n    {% block content %}{% endblock %}\n</div>"
+      },
+      {
+        "name": "popover_controller.js",
+        "dir": "assets/controllers/ui",
+        "content": "import {Controller} from \"@hotwired/stimulus\";\nimport {createPopper} from \"@popperjs/core\";\nimport {useClickOutside} from \"stimulus-use\";\n\nexport default class UIPopover extends Controller {\n    static targets = ['trigger', 'content', 'wrapper'];\n\n    static values = {\n        placement: String,\n        trigger: String,\n        dismissAfter: Number,\n        matchWidth: Boolean,\n    }\n\n    initialize() {\n        if (!['click', 'hover', 'focus'].includes(this.triggerValue)) {\n            throw new Error('Invalid trigger value');\n        }\n\n        if (!['auto', 'auto-start', 'auto-end', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'right', 'right-start', 'right-end', 'left', 'left-start', 'left-end'].includes(this.placementValue)) {\n            throw new Error('Invalid placement value');\n        }\n    }\n\n    connect() {\n        useClickOutside(this);\n\n        if (this.matchWidthValue) {\n            this.contentTarget.style.width = this.triggerTarget.offsetWidth + \"px\";\n        }\n\n        this.popperInstance = createPopper(this.triggerTarget, this.wrapperTarget, {\n            placement: this.contentTarget.dataset.side || \"bottom\",\n            modifiers: [\n                {\n                    name: \"offset\",\n                    options: {\n                        offset: [0, 8],\n                    },\n                },\n            ],\n        });\n    }\n\n    // Show the popover\n    show() {\n        this.wrapperTarget.classList.remove(\"hidden\");\n        this.contentTarget.classList.remove(\"hidden\");\n        this.contentTarget.dataset.state = \"open\";\n    }\n\n    // Hide the popover\n    hide() {\n        this.wrapperTarget.classList.add(\"hidden\");\n        this.contentTarget.classList.add(\"hidden\");\n        this.contentTarget.dataset.state = \"closed\";\n    }\n\n    clickOutside(event) {\n        this.hide();\n    }\n\n    // Toggle the popover on demand\n    toggle(event) {\n        this.popperInstance.update();\n        if (this.wrapperTarget.classList.contains(\"hidden\")) {\n            this.show();\n\n            if (this.hasDismissAfterValue) {\n                setTimeout(() => {\n                    this.hide();\n                }, this.dismissAfterValue);\n            }\n        } else {\n            this.hide();\n        }\n    }\n}"
+      }
+    ]
   }
 ]
