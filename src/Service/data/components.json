@@ -145,5 +145,18 @@
         "content": "{% props variant = 'default', size = 'default' %}\n\n{% set buttonVariants = cva({\n    base: 'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 ',\n    variants: {\n        variant: {\n            default:\"bg-primary text-primary-foreground shadow hover:bg-primary/90\",\n            destructive:\"bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90\",\n            outline:\"border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground\",\n            secondary:\"bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80\",\n            ghost: \"hover:bg-accent hover:text-accent-foreground\",\n            link: \"text-primary underline-offset-4 hover:underline\",\n        },\n        size: {\n            default: \"h-9 px-4 py-2\",\n            sm: \"h-8 rounded-md px-3 text-xs\",\n            lg: \"h-10 rounded-md px-8\",\n            icon: \"h-9 w-9\",\n        },\n    },\n    defaultVariants: {\n        variant: \"default\",\n        size: \"default\",\n    },\n}) %}\n\n{% set hasHref = attributes.all.href is defined %}\n{% set slot = hasHref ? 'a' : 'button' %}\n\n<{{ slot }}{{ attributes.without('class') }} class=\"{{ buttonVariants.apply({ variant, size }, attributes.render('class') ?? '') | tailwind_merge }}\">\n    {% block content %}{% endblock %}\n</{{ slot }}>"
       }
     ]
+  },
+  {
+    "name": "aspect-ratio",
+    "dependencies": [],
+    "registryDependencies": [],
+    "iconDependencies": [],
+    "files": [
+      {
+        "name": "root.html.twig",
+        "dir": "templates/components/ui/aspect-ratio",
+        "content": "{% props ratio = \"1/1\" %}\n\n{% set aspectRatioArray = ratio|split('/') %}\n{% set result = (aspectRatioArray[1]|number_format)/(aspectRatioArray[0]|number_format)*100 %}\n\n<div class=\"relative w-full\" style=\"padding-bottom: {{ result }}%;\">\n    <div{{ attributes.without('class') }}\n            class=\"{{ ['bg-muted absolute inset-0 [&>img]:object-cover [&>img]:absolute [&>img]:h-full [&>img]:w-full [&>img]:inset-0 [&>img]:text-transparent', attributes.render('class')] | tailwind_merge }}\">\n        {% block content %}{% endblock %}\n    </div>\n</div>"
+      }
+    ]
   }
 ]
