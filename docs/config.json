@@ -1,10 +1,1 @@
-{
-  "productVersion": "0.1.0",
-  "productWebUrl": ".",
-  "productId": "fu",
-  "stage": "release",
-  "downloadTitle": "Get Fusion UI",
-  "keymaps": {},
-  "searchMaxHits": 75,
-  "productName": "Fusion UI"
-}
+{"productVersion":"0.1.0","productWebUrl":".","productId":"fu","stage":"release","downloadTitle":"Get Fusion UI","keymaps":{},"searchMaxHits":75,"productName":"Fusion UI"}
