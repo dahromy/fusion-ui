@@ -362,6 +362,11 @@
         "name": "textarea.html.twig",
         "dir": "templates/components/ui/input",
         "content": "<textarea{{ attributes.add(stimulus_controller('ui--input')).without('class') }} class=\"{{ ['flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50', attributes.render('class')] |tailwind_merge }}\">{% block content %}{% endblock %}</textarea>"
+      },
+      {
+        "name": "input_controller.js",
+        "dir": "assets/controllers/ui",
+        "content": "import {Controller} from \"@hotwired/stimulus\";\n\nexport default class UIInput extends Controller {\n    setValue(newValue) {\n        this.element.value = newValue;\n        this.element.dispatchEvent(new Event('change', {bubbles: true}));\n    }\n}"
       }
     ]
   },
