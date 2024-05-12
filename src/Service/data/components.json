@@ -418,5 +418,68 @@
         "content": "import { Controller } from \"@hotwired/stimulus\";\nimport { useTransition } from \"stimulus-use\";\n\nexport default class extends Controller {\n    connect() {\n        useTransition(this);\n    }\n}"
       }
     ]
+  },
+  {
+    "name": "select",
+    "dependencies": [],
+    "registryDependencies": [
+      "popover",
+      "input"
+    ],
+    "iconDependencies": [
+      "radix-icons:caret-sort"
+    ],
+    "files": [
+      {
+        "name": "root.html.twig",
+        "dir": "templates/components/ui/select",
+        "content": "{% props placement = 'bottom-start', trigger = 'click', dismissAfter = null, matchWidth = true %}\n\n<div {{ attributes.add(stimulus_controller('ui--popover', {placement, trigger, dismissAfter, matchWidth})).without('class') }} class=\"{{ attributes.render('class') }}\">\n    {% block content %}{% endblock %}\n</div>"
+      },
+      {
+        "name": "content",
+        "dir": "templates/components/ui/select",
+        "content": "{% props id = null %}\n\n<div {{ stimulus_target('ui--popover', 'wrapper') }} class=\"hidden\">\n    <div {{ attributes.add(stimulus_target('ui--popover', 'content')).add(stimulus_controller(controllerName='ui--select', controllerOutlets={\n        'ui--input': '#' ~ id,\n        'ui--text': '#' ~ id,\n    })).without('class') }}\n            data-state=\"open\"\n            role=\"dialog\"\n            data-side=\"{{ outerScope.placement }}\"\n            tabindex=\"-1\"\n            class=\"{{ ['relative z-50 p-1 max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2', attributes.render('class')] | tailwind_merge }}\"\n    >\n        {% block content %}{% endblock %}\n    </div>\n</div>"
+      },
+      {
+        "name": "trigger.html.twig",
+        "dir": "templates/components/ui/select",
+        "content": "{% if outerScope.trigger == 'hover' %}\n    {% set action = stimulus_action('ui--popover', 'toggle', 'mouseenter') %}\n{% elseif outerScope.trigger == 'focus' %}\n    {% set action = stimulus_action('ui--popover', 'toggle', 'focusin') %}\n{% else %}\n    {% set action = stimulus_action('ui--popover', 'toggle', outerScope.trigger) %}\n{% endif %}\n\n<button {{ attributes.add(stimulus_target('ui--popover', 'trigger')).add(action).without('class') }} type=\"button\" class=\"{{ ['flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1', attributes.render('class')] | tailwind_merge }}\">\n    {% block content %}{% endblock %}\n    <twig:ux:icon name=\"radix-icons:caret-sort\" class=\"h-4 w-4 opacity-50\" />\n</button>"
+      },
+      {
+        "name": "item.html.twig",
+        "dir": "templates/components/ui/select",
+        "content": "{% props value = null %}\n\n<div {{ attributes.add(stimulus_target('ui--select', 'item')).add(stimulus_action('ui--popover', 'hide', 'click')).add(stimulus_action('ui--select', 'selectItem', 'click')).without('class') }}\n        role=\"menuitem\"\n        data-value=\"{{ value }}\"\n        class=\"{{ ['group/selectitem relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50', attributes.render('class')] |tailwind_merge }}\"\n>\n    <span class=\"absolute right-2 flex h-3.5 w-3.5 items-center justify-center hidden group-data-[selected=true]/selectitem:block\">\n        <twig:ux:icon name=\"radix-icons:check\" class=\"w-4 h-4\"/>\n    </span>\n    {% block content %}{% endblock %}\n</div>"
+      },
+      {
+        "name": "group.html.twig",
+        "dir": "templates/components/ui/select",
+        "content": "<div {{ attributes }}>\n    {% block content %}{% endblock %}\n</div>"
+      },
+      {
+        "name": "input.html.twig",
+        "dir": "templates/components/ui/select",
+        "content": "<input {{ attributes.add(stimulus_controller('ui--input')) }} type=\"hidden\" class=\"hidden\">"
+      },
+      {
+        "name": "label.html.twig",
+        "dir": "templates/components/ui/select",
+        "content": "<h3 {{ attributes.without('class') }} class=\"{{ ['px-2 py-1.5 text-sm font-semibold', attributes.render('class')] | tailwind_merge }}\">\n    {% block content %}{% endblock %}\n</h3>"
+      },
+      {
+        "name": "separator.html.twig",
+        "dir": "templates/components/ui/select",
+        "content": "<div {{ attributes.without('class') }}\n        class=\"{{ ['-mx-1 my-1 h-px bg-muted', attributes.render('class')] |tailwind_merge }}\"></div>"
+      },
+      {
+        "name": "select_controller.js",
+        "dir": "assets/controllers/ui",
+        "content": "import {Controller} from \"@hotwired/stimulus\";\n\nexport default class UISelect extends Controller {\n    static targets = [\"item\"];\n    static outlets = [\"ui--input\", \"ui--text\"];\n\n    connect() {\n        this.setSelectedItem();\n    }\n\n    setSelectedItem() {\n        const selectedItem = this.selectedItem();\n\n        this.itemTargets.forEach((item) => {\n            item.removeAttribute(\"data-selected\");\n            item.removeAttribute(\"aria-selected\");\n        });\n\n        if (selectedItem) {\n            selectedItem.setAttribute(\"data-selected\", \"true\");\n            selectedItem.setAttribute(\"aria-selected\", \"true\");\n        }\n    }\n\n    selectedItem() {\n        return this.itemTargets.find((item) => {\n            return item.dataset.value === this.uiInputOutlet.element.value;\n        });\n    }\n\n    selectItem(event) {\n        event.preventDefault();\n        const selectedValue = event.currentTarget.dataset.value;\n        const selectedText = event.currentTarget.innerText;\n\n        this.setValue(selectedValue);\n        this.setInnerText(selectedText);\n\n        this.setSelectedItem()\n    }\n\n    setValue(selectedValue) {\n        this.uiInputOutlet.setValue(selectedValue);\n    }\n\n    setInnerText(selectedOption) {\n        this.uiTextOutlet.setText(selectedOption);\n    }\n}"
+      },
+      {
+        "name": "text_controller.js",
+        "dir": "assets/controllers/ui",
+        "content": "import {Controller} from \"@hotwired/stimulus\";\n\nexport default class UIText extends Controller {\n    setText(content) {\n        this.element.innerText = content;\n    }\n}"
+      }
+    ]
   }
 ]
