@@ -13,13 +13,14 @@ class ComponentService
         $this->components = json_decode(file_get_contents(__DIR__ . '/data/components.json'), true);
     }
 
-    public function add(string $componentName): void {
+    public function add(string $componentName): void
+    {
 
         if (!array_filter($this->components, fn($component) => $component['name'] === $componentName)) {
             throw new \InvalidArgumentException("Component $componentName not found");
         }
 
-        $component = array_filter($this->components, fn($component) => $component['name'] === $componentName)[0];
+        $component = current(array_filter($this->components, fn($component) => $component['name'] === $componentName));
 
         $this->handleDependencies($component);
 
@@ -74,5 +75,10 @@ class ComponentService
         }
 
         file_put_contents($fileDir . '/' . $fileName, $fileContent);
+    }
+
+    public function getComponents(): array
+    {
+        return array_map(fn($component) => $component['name'], $this->components);
     }
 }

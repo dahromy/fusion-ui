@@ -8,6 +8,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
@@ -37,9 +39,15 @@ class AddCommand extends Command
         $names = $input->getArgument('names');
 
         if (empty($names)) {
-            $io->error('You must provide at least one component name');
+            $helper = $this->getHelper('question');
 
-            return Command::FAILURE;
+            $components = $this->componentService->getComponents();
+            $question = new ChoiceQuestion('Select the components to add', $components);
+
+            $question->setAutocompleterValues($components);
+            $question->setMultiselect(true);
+
+            $names = $helper->ask($input, $output, $question);
         }
 
         foreach ($names as $name) {
@@ -47,6 +55,8 @@ class AddCommand extends Command
 
             $this->componentService->add($name);
         }
+
+        $io->success('Components added successfully!');
 
         return Command::SUCCESS;
     }
