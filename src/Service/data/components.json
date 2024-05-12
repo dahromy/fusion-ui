@@ -364,5 +364,18 @@
         "content": "<textarea{{ attributes.add(stimulus_controller('ui--input')).without('class') }} class=\"{{ ['flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50', attributes.render('class')] |tailwind_merge }}\">{% block content %}{% endblock %}</textarea>"
       }
     ]
+  },
+  {
+    "name": "label",
+    "dependencies": [],
+    "registryDependencies": [],
+    "iconDependencies": [],
+    "files": [
+      {
+        "name": "root.html.twig",
+        "dir": "templates/components/ui/label",
+        "content": "{% set labelVariants = cva({\n    base: 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',\n}) %}\n\n<label {{ attributes.without('class') }} class=\"{{ labelVariants.apply({}, attributes.render('class') ?? '') | tailwind_merge }}\">\n    {% block content %}{% endblock %}\n</label>"
+      }
+    ]
   }
 ]
