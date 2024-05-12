@@ -8,5 +8,19 @@
     <toc-element topic="Cli.md"/>
     <toc-element toc-title="Components" id="components">
         <toc-element topic="Accordion.md"/>
+        <toc-element topic="Alert.md"/>
+        <toc-element topic="AlertDialog.md"/>
+        <toc-element topic="AspectRatio.md"/>
+        <toc-element topic="Avatar.md"/>
+        <toc-element topic="Badge.md"/>
+        <toc-element topic="Button.md"/>
+        <toc-element topic="Card.md"/>
+        <toc-element topic="Carousel.md"/>
+        <toc-element topic="Checkbox.md"/>
+        <toc-element topic="Collapsible.md"/>
+        <toc-element topic="Input.md"/>
+        <toc-element topic="Label.md"/>
+        <toc-element topic="Popover.md"/>
+        <toc-element topic="Select.md"/>
     </toc-element>
 </instance-profile>
