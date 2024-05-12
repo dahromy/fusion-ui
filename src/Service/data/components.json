@@ -241,5 +241,51 @@
         "content": "<div{{ attributes.without('class') }}\n        class=\"{{ ['font-semibold leading-none tracking-tight', attributes.render('class')] |tailwind_merge }}\">\n    {% block content %}{% endblock %}\n</div>"
       }
     ]
+  },
+  {
+    "name": "carousel",
+    "dependencies": [
+      "embla-carousel",
+      "@kanety/stimulus-static-actions"
+    ],
+    "registryDependencies": [
+      "button"
+    ],
+    "iconDependencies": [
+      "radix-icons:arrow-right",
+      "radix-icons:arrow-left"
+    ],
+    "files": [
+      {
+        "name": "root.html.twig",
+        "dir": "templates/components/ui/carousel",
+        "content": "{% props opts = {}, orientation = \"horizontal\" %}\n\n{% set options = {...opts, axis: orientation == 'horizontal' ? 'x' : 'y'} %}\n\n<div{{ attributes.add(stimulus_controller('ui--carousel', {orientation, options})).without('class') }}\n        class=\"{{ ['relative', attributes.render('class')] | tailwind_merge }}\"\n        role=\"region\"\n        aria-roledescription=\"carousel\"\n>\n    {% block content %}{% endblock %}\n</div>"
+      },
+      {
+        "name": "content.html.twig",
+        "dir": "templates/components/ui/carousel",
+        "content": "<div class=\"overflow-hidden\" {{ stimulus_target('ui--carousel', 'carousel') }}>\n    <div {{ attributes.add(stimulus_target('ui--carousel', 'content')).without('class') }} class=\"{{ ['flex', attributes.render('class')] | tailwind_merge }}\">\n        {% block content %}{% endblock %}\n    </div>\n</div>"
+      },
+      {
+        "name": "item.html.twig",
+        "dir": "templates/components/ui/carousel",
+        "content": "<div{{ attributes.add(stimulus_target('ui--carousel', 'item')).without('class') }}\n        class=\"{{ ['min-w-0 shrink-0 grow-0 basis-full', attributes.render('class')] | tailwind_merge }}\"\n        role=\"group\"\n        aria-roledescription=\"slide\"\n>\n    {% block content %}{% endblock %}\n</div>"
+      },
+      {
+        "name": "next.html.twig",
+        "dir": "templates/components/ui/carousel",
+        "content": "{% props variant = 'outline', size = 'icon' %}\n\n{% set attrs = attributes.add(stimulus_target('ui--carousel', 'next')).without('class').defaults({\n    class: [\"absolute h-8 w-8 rounded-full\", attributes.render('class')] | tailwind_merge,\n    variant,\n    size\n}) %}\n\n{% component 'ui:button:root' with {...attrs} %}\n    {% block content %}\n        <twig:ux:icon name=\"radix-icons:arrow-right\" class=\"w-4 h-4\"/>\n        <span class=\"sr-only\">Next slide</span>\n    {% endblock %}\n{% endcomponent %}"
+      },
+      {
+        "name": "previous.html.twig",
+        "dir": "templates/components/ui/carousel",
+        "content": "{% props variant = 'outline', size = 'icon' %}\n\n{% set attrs = attributes.add(stimulus_target('ui--carousel', 'previous')).without('class').defaults({\n    class: [\"absolute h-8 w-8 rounded-full\", attributes.render('class')] | tailwind_merge,\n    variant,\n    size\n}) %}\n\n{% component 'ui:button:root' with {...attrs} %}\n    {% block content %}\n        <twig:ux:icon name=\"radix-icons:arrow-left\" class=\"w-4 h-4\"/>\n        <span class=\"sr-only\">Previous slide</span>\n    {% endblock %}\n{% endcomponent %}"
+      },
+      {
+        "name": "carousel_controller.js",
+        "dir": "assets/controllers/ui",
+        "content": "import {Controller} from \"@hotwired/stimulus\";\nimport EmblaCarousel from 'embla-carousel'\nimport '@kanety/stimulus-static-actions';\n\nexport default class UICarousel extends Controller {\n    static targets = ['carousel', 'content', 'item', 'previous', 'next']\n    static values = {\n        orientation: String,\n        options: Object\n    }\n    static actions = [\n        ['previous', 'click->scrollPrev'],\n        ['next', 'click->scrollNext'],\n    ];\n\n    initialize() {\n        this.api = EmblaCarousel(this.carouselTarget, this.optionsValue)\n\n        this.updateScrollButtonsState();\n        this.updateClasses();\n    }\n\n    scrollPrev() {\n        this.api.scrollPrev();\n        this.updateScrollButtonsState();\n    }\n\n    scrollNext() {\n        this.api.scrollNext();\n        this.updateScrollButtonsState();\n    }\n\n    updateScrollButtonsState() {\n        this.previousTarget.disabled = !this.api.canScrollPrev();\n        this.nextTarget.disabled = !this.api.canScrollNext();\n    }\n\n    updateClasses() {\n        const isHorizontal = this.orientationValue === 'horizontal';\n\n        const contentClass = isHorizontal ? ['-ml-4'] : ['-mt-4', 'flex-col'];\n        this.addClassesToElement(this.contentTarget, contentClass);\n\n        const itemClass = isHorizontal ? ['pl-4'] : ['pt-4'];\n        this.itemTargets.forEach(itemTarget => this.addClassesToElement(itemTarget, itemClass));\n\n        const previousClass = isHorizontal ? ['-left-12', 'top-1/2', '-translate-y-1/2'] : ['-top-12', 'left-1/2', '-translate-x-1/2', 'rotate-90'];\n        this.addClassesToElement(this.previousTarget, previousClass);\n\n        const nextClass = isHorizontal ? ['-right-12', 'top-1/2', '-translate-y-1/2'] : ['-bottom-12', 'left-1/2', '-translate-x-1/2', 'rotate-90'];\n        this.addClassesToElement(this.nextTarget, nextClass);\n    }\n\n    addClassesToElement(element, classes) {\n        classes.forEach(className => element.classList.add(className));\n    }\n}"
+      }
+    ]
   }
 ]
