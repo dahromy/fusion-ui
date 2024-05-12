@@ -317,8 +317,12 @@
   },
   {
     "name": "collapsible",
-    "dependencies": ["@kanety/stimulus-static-actions"],
-    "registryDependencies": ["button"],
+    "dependencies": [
+      "@kanety/stimulus-static-actions"
+    ],
+    "registryDependencies": [
+      "button"
+    ],
     "iconDependencies": [],
     "files": [
       {
@@ -340,6 +344,24 @@
         "name": "collapsible_controller.js",
         "dir": "assets/controllers/ui",
         "content": "import {Controller} from \"@hotwired/stimulus\";\nimport '@kanety/stimulus-static-actions';\n\nexport default class UICollapsible extends Controller {\n    static targets = ['trigger', 'content'];\n    static actions = [\n        ['trigger', 'click->toggle']\n    ];\n\n    setDataState(target, state) {\n        target.setAttribute('data-state', state);\n    }\n\n    setAriaAttributes(target, expanded) {\n        target.setAttribute('aria-expanded', expanded);\n    }\n\n    toggle() {\n        const active = this.element.dataset.state === 'active';\n        this.contentTarget.hidden = active;\n\n        this.setDataState(this.element, active ? 'closed' : 'active');\n        this.setDataState(this.triggerTarget, active ? 'closed' : 'active');\n        this.setDataState(this.contentTarget, active ? 'closed' : 'active');\n        this.setAriaAttributes(this.triggerTarget, active ? 'false' : 'true');\n    }\n}"
+      }
+    ]
+  },
+  {
+    "name": "input",
+    "dependencies": [],
+    "registryDependencies": [],
+    "iconDependencies": [],
+    "files": [
+      {
+        "name": "default.html.twig",
+        "dir": "templates/components/ui/input",
+        "content": "<input{{ attributes.add(stimulus_controller('ui--input')).without('class') }}\n        class=\"{{ ['flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 file:pt-[3px]', attributes.render('class') ?? ''] | tailwind_merge }}\">"
+      },
+      {
+        "name": "textarea.html.twig",
+        "dir": "templates/components/ui/input",
+        "content": "<textarea{{ attributes.add(stimulus_controller('ui--input')).without('class') }} class=\"{{ ['flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50', attributes.render('class')] |tailwind_merge }}\">{% block content %}{% endblock %}</textarea>"
       }
     ]
   }
