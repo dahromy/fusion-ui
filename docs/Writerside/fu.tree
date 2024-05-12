@@ -2,8 +2,8 @@
 <!DOCTYPE instance-profile
         SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
 
-<instance-profile id="fu" name="Fusion UI" start-page="Introduction.md">
-    <toc-element topic="Introduction.md"/>
+<instance-profile id="fu" name="Fusion UI" start-page="Index.md">
+    <toc-element topic="Index.md"/>
     <toc-element topic="Installation.md"/>
     <toc-element topic="Cli.md"/>
     <toc-element toc-title="Components" id="components">
