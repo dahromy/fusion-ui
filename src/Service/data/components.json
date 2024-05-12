@@ -68,5 +68,69 @@
       }
     ],
     "type": "ui"
+  },
+  {
+    "name": "alert-dialog",
+    "dependencies": ["@kanety/stimulus-static-actions"],
+    "registryDependencies": ["button"],
+    "iconDependencies": [],
+    "files": [
+      {
+        "name": "root.html.twig",
+        "dir": "templates/components/ui/alert-dialog",
+        "content": "<div{{ attributes.add(stimulus_controller('ui--alert-dialog')) }}>\n    {% block content %}{% endblock %}\n</div>"
+      },
+      {
+        "name": "action.html.twig",
+        "dir": "templates/components/ui/alert-dialog",
+        "content": "{% set attrs = attributes.add(stimulus_target('ui--alert-dialog', 'action')) %}\n\n{% component 'ui:button:root' with {...attrs} %}\n    {% block content %}{{ block(outerBlocks.content) }}{% endblock %}\n{% endcomponent %}"
+      },
+      {
+        "name": "cancel.html.twig",
+        "dir": "templates/components/ui/alert-dialog",
+        "content": "{% set attrs = attributes.add(stimulus_target('ui--alert-dialog', 'cancel')) %}\n\n{% component 'ui:button:root' with {...attrs} %}\n    {% block content %}{{ block(outerBlocks.content) }}{% endblock %}\n{% endcomponent %}"
+      },
+      {
+        "name": "content.html.twig",
+        "dir": "templates/components/ui/alert-dialog",
+        "content": "<twig:ui:alert-dialog:overlay/>\n<div {{ attributes.add(stimulus_target('ui--alert-dialog', 'content')).without('class') }}\n        role=\"alertdialog\" data-state=\"closed\" data-aria-hidden=\"true\" aria-hidden=\"true\" hidden\n        style=\"display:none;\"\n        class=\"{{ [attributes.render('class'), 'fixed left-[50%] top-[50%] z-50 grid gap-4 w-full max-w-lg translate-x-[-50%] translate-y-[-50%]  border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg'] | tailwind_merge }}\"\n>\n    {% block content %}{% endblock %}\n</div>\n"
+      },
+      {
+        "name": "description.html.twig",
+        "dir": "templates/components/ui/alert-dialog",
+        "content": "<div{{ attributes.add(stimulus_target('ui--alert-dialog', 'description')).without('class') }}\n        class=\"{{ ['text-sm text-muted-foreground', attributes.render('class')] | tailwind_merge }}\">\n    {% block content %}{% endblock %}\n</div>"
+      },
+      {
+        "name": "footer.html.twig",
+        "dir": "templates/components/ui/alert-dialog",
+        "content": "<div{{ attributes.add(stimulus_target('ui--alert-dialog', 'footer')).without('class') }}\n        class=\"{{ ['flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', attributes.render('class')] | tailwind_merge }}\">\n    {% block content %}{% endblock %}\n</div>"
+      },
+      {
+        "name": "header.html.twig",
+        "dir": "templates/components/ui/alert-dialog",
+        "content": "<div{{ attributes.add(stimulus_target('ui--alert-dialog', 'header')).without('class') }}\n        class=\"{{ ['flex flex-col space-y-2 text-center sm:text-left', attributes.render('class')] | tailwind_merge }}\">\n    {% block content %}{% endblock %}\n</div>"
+      },
+      {
+        "name": "overlay.html.twig",
+        "dir": "templates/components/ui/alert-dialog",
+        "content": "<div{{ attributes.add(stimulus_target('ui--alert-dialog', 'overlay')).without('class') }}\n        hidden\n        data-state=\"closed\" data-aria-hidden=\"true\" aria-hidden=\"true\"\n        class=\"{{ ['fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0', attributes.render('class')] | tailwind_merge }}\">\n    {% block content %}{% endblock %}\n</div>"
+      },
+      {
+        "name": "title.html.twig",
+        "dir": "templates/components/ui/alert-dialog",
+        "content": "<div{{ attributes.add(stimulus_target('ui--alert-dialog', 'title')).without('class') }}\n        class=\"{{ ['text-lg font-semibold', attributes.render('class')] | tailwind_merge }}\">\n    {% block content %}{% endblock %}\n</div>"
+      },
+      {
+        "name": "trigger.html.twig",
+        "dir": "templates/components/ui/alert-dialog",
+        "content": "<div{{ attributes.add(stimulus_target('ui--alert-dialog', 'trigger')).add(stimulus_action('ui--alert-dialog', 'open', 'click')) }}>\n    {% block content %}{% endblock %}\n</div>"
+      },
+      {
+        "name": "alert-dialog_controller.js",
+        "dir": "assets/controllers/ui",
+        "content": "import {Controller} from \"@hotwired/stimulus\";\nimport '@kanety/stimulus-static-actions';\n\nexport default class UIAlertDialog extends Controller {\n    static targets = ['trigger', 'content', 'action', 'cancel', 'overlay'];\n    static actions = [\n        ['trigger', 'click->open'],\n        ['cancel', 'click->close'],\n        ['action', 'click->close']\n    ];\n\n    setDataState(target, state) {\n        target.setAttribute('data-state', state);\n    }\n\n    setAriaAttributes(target, expanded) {\n        target.setAttribute('aria-expanded', expanded);\n        target.setAttribute('aria-hidden', expanded === 'true' ? 'false' : 'true');\n        target.setAttribute('data-aria-hidden', expanded === 'true' ? 'false' : 'true');\n    }\n\n    setVisualAttributes(target, hidden, display) {\n        target.hidden = hidden;\n        if (display !== null) {\n            target.style.display = display;\n        }\n    }\n\n    open(e) {\n        this.triggerButton = e.target;\n        this.setDataState(this.element, 'open');\n        this.setDataState(this.triggerButton, 'open');\n        this.setDataState(this.contentTarget, 'open');\n        this.setDataState(this.overlayTarget, 'open');\n        this.setAriaAttributes(this.triggerButton, 'true');\n        this.setVisualAttributes(this.contentTarget, false, null);\n        this.setVisualAttributes(this.overlayTarget, false, null);\n        this.contentTarget.style.removeProperty('display');\n    }\n\n    close() {\n        this.setDataState(this.element, 'closed');\n        this.setDataState(this.triggerButton, 'closed');\n        this.setDataState(this.contentTarget, 'closed');\n        this.setDataState(this.overlayTarget, 'closed');\n        this.setAriaAttributes(this.triggerButton, 'false');\n\n        setTimeout(() => {\n            this.setVisualAttributes(this.contentTarget, true, 'none');\n            this.setVisualAttributes(this.overlayTarget, true, null);\n        }, 120)\n    }\n}"
+      }
+    ],
+    "type": "ui"
   }
 ]
