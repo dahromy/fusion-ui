@@ -7,7 +7,7 @@ This guide will walk you through the process of building forms using the Symfony
 1. To integrate the Form component into your project, execute the following command:
 
     ```bash
-    php bin/console fusion-ui:add collapsible
+    php bin/console fusion-ui:add form
     ```
     
     This command will add the necessary Symfony form template files to your project.
@@ -17,11 +17,7 @@ This guide will walk you through the process of building forms using the Symfony
     ```yaml
     twig:
         form_themes:
-          - 'form/ui/form.html.twig'
-          - 'form/ui/input.html.twig'
-          - 'form/ui/button.html.twig'
-          - 'form/ui/checkbox.html.twig'
-          - 'form/ui/choice.html.twig'
+          - 'themes/form.html.twig'
     ```
 
 ## Usage
