@@ -1,5 +1,6 @@
 {
   "name": "dahromy/fusion-ui",
+  "version": "0.1.1",
   "type": "symfony-bundle",
   "description": "This bundle provides a set of Twig components of reusable UI elements for Symfony applications.",
   "keywords": [
@@ -48,6 +49,5 @@
     "symfony": {
       "allow-contrib": "true"
     }
-  },
-  "version": "0.1.1"
+  }
 }
